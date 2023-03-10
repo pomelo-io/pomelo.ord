@@ -1,0 +1,17 @@
+{
+  "private": true,
+  "name": "pomelo.ord",
+  "version": "0.1.0",
+  "description": "Pomelo Ordinals",
+  "license": "MIT OR Apache-2.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "blanc++ ord.pomelo.cpp -I include",
+    "release": "cdt-cpp ord.pomelo.cpp -I include",
+    "test": "node *.spec.js"
+  },
+  "devDependencies": {
+    "@proton/vert": "*"
+  }
+}
