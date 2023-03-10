@@ -16,19 +16,22 @@ public:
      *
      * - `{time_point_sec} start_time` - start time (ex: "2023-03-09T00:00:00")
      * - `{int32_t} template_id` - allowed AtomicAsset template ID
+     * - `{uint8_t} max_per_account` - maximum deposits per account
      *
      * ### example
      *
      * ```json
      * {
      *   "start_time": "2023-03-09T00:00:00",
-     *   "template_id": 7022
+     *   "template_id": 7022,
+     *   "max_per_account": 2
      * }
      * ```
      */
     struct [[eosio::table("config")]] config_row {
         time_point_sec          start_time;
         int32_t                 template_id;
+        uint8_t                 max_per_account;
     };
     typedef eosio::singleton< "config"_n, config_row > config_table;
 
@@ -77,4 +80,5 @@ public:
 
 private:
     void check_bech32_bitcoin_address( const string bech32_bitcoin_address );
+    void check_max_per_account( const name account );
 };
