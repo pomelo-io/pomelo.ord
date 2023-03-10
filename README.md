@@ -5,7 +5,7 @@
 
 > Send [Pomelo NFT Astronauts](https://eos.atomichub.io/market?collection_name=pomelo&order=asc&schema_name=astronauts&sort=price&state=1&symbol=EOS&template_data:text.name=Pomelo%20Astronaut) to [Bitcoin Ordinals](https://ordinals.com/).
 
-![ordinals](https://media.discordapp.net/attachments/1082502757686190190/1083060178385129572/800-min.png)
+![ordinals](https://media.discordapp.net/attachments/1082502757686190190/1083534443836362782/Pixel_Astronauts_C1V1.png?width=1859&height=1115)
 
 ## Quickstart
 
@@ -15,3 +15,8 @@
 # Send NFT to contract using Bitcoin Bech32 address as memo
 $ cleos push action atomicassets transfer '["myaccount", "ord.pomelo", [2199024546311], "bc1pl5f3lr7ff8xhf2ra4znrfc4eg4gg8f3t2a6hw4w5rjw87p0tn9ssxtzrsk"]' -p myaccount
 ```
+
+## Bitcoin Bech32 Wallet
+
+- [**Hiro** Wallet](https://wallet.hiro.so/)
+- [`ord`](https://github.com/casey/ord) (relies on Bitcoin Core)
