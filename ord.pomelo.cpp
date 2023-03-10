@@ -3,7 +3,7 @@
 #include "ord.pomelo.hpp"
 
 [[eosio::action]]
-void ord::init( const time_point_sec start_time, const int32_t template_id )
+void ord::init( const time_point_sec start_time, const int32_t template_id, const uint8_t max_per_account )
 {
     require_auth( get_self() );
 
@@ -11,6 +11,7 @@ void ord::init( const time_point_sec start_time, const int32_t template_id )
     auto config = _config.get_or_default();
     config.start_time = start_time;
     config.template_id = template_id;
+    config.max_per_account = max_per_account;
     _config.set( config, get_self() );
 }
 
@@ -31,11 +32,11 @@ void ord::on_nft_transfer( const name from, const name to, const vector<uint64_t
 {
     ords_table _ords( get_self(), get_self().value );
     config_table _config( get_self(), get_self().value );
-    auto config = _config.get_or_default();
+    check(_config.exists(), "Pomelo Ordinals is not initialized.");
+    auto config = _config.get();
 
     // validation
-    check( config.start_time < current_time_point(), "Pomelo Ordinals deposits has not started yet." );
-    check_max_per_account( from );
+    check( config.start_time < current_time_point(), "Pomelo Ordinals deposits has not started." );
     check_bech32_bitcoin_address( memo );
 
     for ( auto asset_id : asset_ids ) {
@@ -48,6 +49,7 @@ void ord::on_nft_transfer( const name from, const name to, const vector<uint64_t
             row.bech32_bitcoin_address = memo;
         });
     }
+    check_max_per_account( from );
 }
 
 void ord::check_bech32_bitcoin_address( const string bech32_bitcoin_address )
@@ -58,7 +60,7 @@ void ord::check_bech32_bitcoin_address( const string bech32_bitcoin_address )
     if ( bech32_bitcoin_address.substr(2, 1) != "1" ) {
         check(false, "Invalid Bitcoin Bech32 Ordinals address version.");
     }
-    if ( bech32_bitcoin_address.length() != 63 ) {
+    if ( bech32_bitcoin_address.length() != 62 ) {
         check(false, "Invalid Bitcoin Bech32 Ordinals address length.");
     }
 }
@@ -75,5 +77,5 @@ void ord::check_max_per_account( const name account )
             count++;
         }
     }
-    check( count < config.max_per_account, "Maximum number of NFT assets per account has been reached." );
+    check( count <= config.max_per_account, "Maximum number of NFT assets per account has been reached." );
 }

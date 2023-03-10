@@ -67,7 +67,7 @@ public:
     typedef eosio::multi_index< "ords"_n, ords_row> ords_table;
 
     [[eosio::action]]
-    void init( const time_point_sec start_time, const int32_t template_id );
+    void init( const time_point_sec start_time, const int32_t template_id, const uint8_t max_per_account );
 
     [[eosio::action]]
     void validate( const string bech32_bitcoin_address );
