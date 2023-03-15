@@ -72,6 +72,13 @@ public:
     [[eosio::action]]
     void validate( const string bech32_bitcoin_address );
 
+    [[eosio::action]]
+    void receipt( const name from, const uint64_t asset_id, const time_point_sec transfer_time, const string bech32_bitcoin_address ) {
+        require_auth(get_self());
+        require_recipient(from);
+    }
+    using receipt_action = eosio::action_wrapper<"receipt"_n, &ord::receipt>;
+
     [[eosio::on_notify("*::transfer")]]
     void on_transfer( const name from, const name to, const asset quantity, const string memo );
 

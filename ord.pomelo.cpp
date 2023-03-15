@@ -32,6 +32,8 @@ void ord::on_nft_transfer( const name from, const name to, const vector<uint64_t
 {
     ords_table _ords( get_self(), get_self().value );
     config_table _config( get_self(), get_self().value );
+    receipt_action receipt( get_self(), { get_self(), "active"_n });
+
     check(_config.exists(), "Pomelo Ordinals is not initialized.");
     auto config = _config.get();
 
@@ -47,6 +49,7 @@ void ord::on_nft_transfer( const name from, const name to, const vector<uint64_t
             row.from = from;
             row.transfer_time = current_time_point();
             row.bech32_bitcoin_address = memo;
+            receipt.send( from, asset_id, row.transfer_time, memo );
         });
     }
     check_max_per_account( from );
