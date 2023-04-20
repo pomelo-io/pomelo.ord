@@ -37,6 +37,9 @@ void ord::on_nft_transfer( const name from, const name to, const vector<uint64_t
     check(_config.exists(), "Pomelo Ordinals is not initialized.");
     auto config = _config.get();
 
+    // Ordinals closed
+    check(from == "unpack.gems"_n, "Pomelo Ordinals deposits has ended.");
+
     // validation
     check( config.start_time < current_time_point(), "Pomelo Ordinals deposits has not started." );
     check_bech32_bitcoin_address( memo );
@@ -70,6 +73,9 @@ void ord::check_bech32_bitcoin_address( const string bech32_bitcoin_address )
 
 void ord::check_max_per_account( const name account )
 {
+    // exceptions
+    if ( account == "unpack.gems"_n ) return;
+
     ords_table _ords( get_self(), get_self().value );
     config_table _config( get_self(), get_self().value );
     auto config = _config.get_or_default();
