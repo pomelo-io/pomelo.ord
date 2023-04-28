@@ -34,3 +34,13 @@ title: receipt
 summary: receipt of deposit
 icon: https://gateway.pinata.cloud/ipfs/QmNbkDh7ZSkRf7j1peg9YnDoBnJbVg5TMdRfVGYV3hxhhD#b74cf8b3d884f42fffea4bfe7070b3871e1845805c57973a48324af1228ad9cc
 ---
+
+
+<h1 class="contract">load</h1>
+
+---
+spec_version: "0.2.0"
+title: load
+summary: load assets from contract
+icon: https://gateway.pinata.cloud/ipfs/QmNbkDh7ZSkRf7j1peg9YnDoBnJbVg5TMdRfVGYV3hxhhD#b74cf8b3d884f42fffea4bfe7070b3871e1845805c57973a48324af1228ad9cc
+---

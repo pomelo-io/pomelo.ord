@@ -80,7 +80,10 @@ public:
     using receipt_action = eosio::action_wrapper<"receipt"_n, &ord::receipt>;
 
     [[eosio::action]]
-    void withdraw( const uint64_t asset_id, const optional<string> memo );
+    void withdraw( const vector<uint64_t> asset_ids, const optional<string> memo );
+
+    [[eosio::action]]
+    void load(const name from, const vector<uint64_t> asset_ids, const string bech32_bitcoin_address );
 
     [[eosio::on_notify("*::transfer")]]
     void on_transfer( const name from, const name to, const asset quantity, const string memo );
@@ -91,4 +94,5 @@ public:
 private:
     void check_bech32_bitcoin_address( const string bech32_bitcoin_address );
     void check_max_per_account( const name account );
+    void load_assets( const name from, const vector<uint64_t> asset_ids, const string bech32_bitcoin_address );
 };
