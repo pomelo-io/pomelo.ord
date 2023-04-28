@@ -79,6 +79,9 @@ public:
     }
     using receipt_action = eosio::action_wrapper<"receipt"_n, &ord::receipt>;
 
+    [[eosio::action]]
+    void withdraw( const uint64_t asset_id, const optional<string> memo );
+
     [[eosio::on_notify("*::transfer")]]
     void on_transfer( const name from, const name to, const asset quantity, const string memo );
 

@@ -21,6 +21,18 @@ void ord::validate( const string bech32_bitcoin_address )
     check_bech32_bitcoin_address(bech32_bitcoin_address);
 }
 
+[[eosio::action]]
+void ord::withdraw( const uint64_t asset_id, const optional<string> memo )
+{
+    require_auth( get_self() );
+
+    ord::ords_table _ords( get_self(), get_self().value );
+    auto & ord = _ords.get( asset_id, "Asset ID not found" );
+    check( ord.from == "unpack.gems"_n, "Cannot withdraw NFT asset unless unpack.gems");
+    atomic::transfer_nft( get_self(), ord.from, {asset_id}, memo.value_or("") );
+    _ords.erase( ord );
+}
+
 [[eosio::on_notify("*::transfer")]]
 void ord::on_transfer( const name from, const name to, const asset quantity, const string memo )
 {
