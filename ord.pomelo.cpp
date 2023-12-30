@@ -3,6 +3,21 @@
 #include "ord.pomelo.hpp"
 
 [[eosio::action]]
+void ord::newaddress(const name from, const uint64_t asset_id, const string bech32_bitcoin_address)
+{
+    require_auth(from);
+
+    check_bech32_bitcoin_address(bech32_bitcoin_address);
+    ord::ords_table _ords( get_self(), get_self().value );
+    auto ord = _ords.get(asset_id, "Asset ID not found");
+    check(ord.from == from, "Cannot change NFT asset address unless owner");
+    check(ord.bech32_bitcoin_address != bech32_bitcoin_address, "New address is the same as the old address");
+    _ords.modify(ord, same_payer, [&](auto &row) {
+        row.bech32_bitcoin_address = bech32_bitcoin_address;
+    });
+}
+
+[[eosio::action]]
 void ord::init( const time_point_sec start_time, const int32_t template_id, const uint8_t max_per_account )
 {
     require_auth( get_self() );

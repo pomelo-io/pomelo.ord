@@ -73,6 +73,9 @@ public:
     void validate( const string bech32_bitcoin_address );
 
     [[eosio::action]]
+    void newaddress(const name from, const uint64_t asset_id, const string bech32_bitcoin_address);
+
+    [[eosio::action]]
     void receipt( const name from, const uint64_t asset_id, const time_point_sec transfer_time, const string bech32_bitcoin_address ) {
         require_auth(get_self());
         require_recipient(from);
