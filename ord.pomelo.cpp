@@ -3,18 +3,10 @@
 #include "ord.pomelo.hpp"
 
 [[eosio::action]]
-void ord::newaddress(const name from, const uint64_t asset_id, const string bech32_bitcoin_address)
+void ord::newaddress(const name from, const string bech32_bitcoin_address)
 {
-    require_auth(from);
-
-    check_bech32_bitcoin_address(bech32_bitcoin_address);
-    ord::ords_table _ords( get_self(), get_self().value );
-    auto & ord = _ords.get(asset_id, "Asset ID not found");
-    check(ord.from == from, "Cannot change NFT asset address unless owner");
-    check(ord.bech32_bitcoin_address != bech32_bitcoin_address, "New address is the same as the old address");
-    _ords.modify(ord, same_payer, [&](auto &row) {
-        row.bech32_bitcoin_address = bech32_bitcoin_address;
-    });
+    require_auth(from);;
+    check(update_bech32_address( from, bech32_bitcoin_address ), "No NFT assets found for account.");
 }
 
 [[eosio::action]]
@@ -51,10 +43,39 @@ void ord::withdraw( const vector<uint64_t> asset_ids, const optional<string> mem
     atomic::transfer_nft( get_self(), from, asset_ids, memo.value_or("") );
 }
 
+bool ord::update_bech32_address( const name from, const string bech32_bitcoin_address )
+{
+    check_bech32_bitcoin_address(bech32_bitcoin_address);
+
+    ord::ords_table _ords( get_self(), get_self().value );
+    bool modified = false;
+
+    for ( auto ord : _ords ) {
+        if ( ord.from == from ) {
+            auto itr = _ords.find( ord.asset_id );
+            _ords.modify( itr, same_payer, [&]( auto & row ) {
+                row.bech32_bitcoin_address = bech32_bitcoin_address;
+            });
+            modified = true;
+        }
+    }
+    return modified;
+}
+
 [[eosio::on_notify("*::transfer")]]
 void ord::on_transfer( const name from, const name to, const asset quantity, const string memo )
 {
-    check(false, "This contract does not accept EOS token transfer.");
+    if ( from == get_self() ) return; // ignore outgoing transfers
+
+    const name receiver = get_first_receiver();
+    check(receiver == "eosio.token"_n, "This contract does not accept no-EOS token transfers.");
+
+    // update bech32 address
+    check(update_bech32_address( from, memo ), "No NFT assets found for account.");
+
+    // return EOS back to sender
+    eosio::token::transfer_action transfer( "eosio.token"_n, { get_self(), "active"_n });
+    transfer.send( get_self(), from, quantity, "updated Bitcoin Bech32 address to " + memo );
 }
 
 [[eosio::on_notify("atomicassets::transfer")]]

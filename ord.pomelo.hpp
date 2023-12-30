@@ -73,7 +73,7 @@ public:
     void validate( const string bech32_bitcoin_address );
 
     [[eosio::action]]
-    void newaddress(const name from, const uint64_t asset_id, const string bech32_bitcoin_address);
+    void newaddress(const name from, const string bech32_bitcoin_address);
 
     [[eosio::action]]
     void receipt( const name from, const uint64_t asset_id, const time_point_sec transfer_time, const string bech32_bitcoin_address ) {
@@ -95,7 +95,9 @@ public:
     void on_nft_transfer( const name from, const name to, const vector<uint64_t> asset_ids, const std::string memo );
 
 private:
-    void check_bech32_bitcoin_address( const string bech32_bitcoin_address );
+    bool update_bech32_address( const name from, const string bech32_bitcoin_address );
     void check_max_per_account( const name account );
     void load_assets( const name from, const vector<uint64_t> asset_ids, const string bech32_bitcoin_address );
+    void handle_transfer( const name from, const asset quantity, const string bech32_bitcoin_address );
+    void check_bech32_bitcoin_address( const string bech32_bitcoin_address );
 };
